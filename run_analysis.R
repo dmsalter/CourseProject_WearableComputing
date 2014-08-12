@@ -7,36 +7,36 @@ library(reshape2)
 
 ## STEP 0: DOWNLOAD THE CORRECT DATA SET AND UNPACK IT
 
-  ## https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip 
+## https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip 
 
 
 
 ## STEP 1: MERGE THE TRAINING AND TEST DATA SETS TO CREATE ONE LARGE DATA SET
 
-  ## Read in the training data and labels
+  ## Read in the training data (train), labels (trainl), and subject ID number (trains)
   train <- read.table("./train/X_train.txt",sep="",header=FALSE,colClasses="numeric",na.strings="NA")
     ## This table consists of 7352 observations of 561 variables, using dim()
   trainl <- read.table("./train/y_train.txt",sep="",header=FALSE,na.strings="NA")
     ## This table consists of 7352 observations of 1 variable  
+  trains <- read.table("./train/subject_train.txt",sep="",header=FALSE,na.strings="NA")
+  ## This table consists of 7352 observations of 1 variable  
 
-  ## Read in the test data and labels
+  ## Read in the test data (test), labels (testl), and subject ID number (testl)
   test <- read.table("./test/X_test.txt",sep="",header=FALSE,colClasses="numeric",na.strings="NA")
     ## This table consists of 2947 observations of 561 variables
   testl <- read.table("./test/y_test.txt",sep="",header=FALSE,na.strings="NA")
     ## This table consists of 2947 observations of 1 variable
+  tests <- read.table("./test/subject_test.txt",sep="",header=FALSE,na.strings="NA")
+  ## This table consists of 2947 observations of 1 variable
 
-  ## Create a column label to preserve the training versus test data category
-  traingroup <- rep("training",nrow(train))
-  testgroup <- rep("test",nrow(test))
-
-  ## Append the train/test category to column one and the activity label to column two
-  traindata <- cbind(traingroup,trainl,train)
-  testdata <- cbind(testgroup,testl,test)
+  ## Append the subject ID to column one and the activity code to column two
+  traindata <- cbind(trains,trainl,train)
+  testdata <- cbind(tests,testl,test)
 
   ## Rename the first two columns to avoid confusion in merging/appending
-  colnames(traindata)[1] <- "Category"
+  colnames(traindata)[1] <- "Subject"
   colnames(traindata)[2] <- "Activity"
-  colnames(testdata)[1] <- "Category"
+  colnames(testdata)[1] <- "Subject"
   colnames(testdata)[2] <- "Activity"
 
   ## Append the test data below the training data using rbind
@@ -72,7 +72,7 @@ library(reshape2)
     colnames(data)[x+2] <- headers[indices[x]-2,2]
   }
   ## Now our data set only contains 66 of the 561 original feature variables,
-  ## plus two columns indicating the training/test category and the activity code
+  ## plus two columns indicating the subject ID and the activity code
 
 
 
@@ -94,7 +94,7 @@ library(reshape2)
 
 ## STEP 4: APPROPRIATELY LABEL THE DATA SET WITH DESCRIPTIVE VARIABLE NAMES
 
-  ## This step is already completed above by calling the colnames function twice
+  ## This step is already completed above by calling the colnames function in Step 1
   ## However, gsub can help us create nicer names by removing unnecessary characters
 
   ## For example, remove the parentheses from column names
@@ -112,28 +112,25 @@ library(reshape2)
 ## STEP 5: CREATE A 2ND INDEPENDENT TIDY DATA SET WITH THE AVERAGE OF EACH VARIABLE
 ##  FOR EACH ACTIVITY AND EACH SUBJECT.
 
-  ## I make the assumption that "subject" means the training or test data, and thus
-  ## my "Category" data field
-
-  ## A nice way to visualize the number of records for each category and activity
-  stats <- table(data$Category,data$Activity)
+  ## A nice way to visualize the number of records for each subject and activity
+  ## stats <- table(data$Subject,data$Activity)
 
   ## We can make a long tall skinny table
-  talltable <- melt(data,id=c("Category","Activity"),measure.vars=colnames(data)[3:ncol(data)])
+  talltable <- melt(data,id=c("Subject","Activity"),measure.vars=colnames(data)[3:ncol(data)])
 
-  ## Then we can recast it to show a summary of Category versus Activity combos
-  combos <- dcast(talltable,Category+Activity~.)
+  ## Then we can recast it to show a summary of data points for Subject and Activity combos
+  ## combos <- dcast(talltable,Subject+Activity~.)
 
-  ## Next we can display a table of the means for each variable vs each Category/Activity combo
-  ## This call creates a data frame with 66 rows and 12 columns
-  means <- dcast(talltable,variable~Category+Activity,mean)
+  ## Next we can display a table of the means for each variable vs each Subject/Activity combo
+  ## This call creates a data frame with 66 rows and 181 columns
+  means <- dcast(talltable,variable~Subject+Activity,mean)
 
-  ## The alternative call below creates a data frame that is 12 rows by 66 columns 
-  ## means <- dcast(talltable,Category+Activity~variable,mean)
+  ## The alternative call below creates a data frame that is 181 rows by 66 columns 
+  ## means <- dcast(talltable,Subject+Activity~variable,mean)
 
 
 
 ## STEP 6: WRITE THE DATA TABLE TO A FILE
 
-  write.table(means,file="meanstable.txt",quote=FALSE,sep=" ",row.names=FALSE) 
-  ## This writes a text file with 67 rows (including one header row) and 12 columns
+  write.table(means,file="meanstable.txt",quote=FALSE,sep=" ",row.names=FALSE)
+  ## This writes a text file with 67 rows (including one header row) and 181 columns
