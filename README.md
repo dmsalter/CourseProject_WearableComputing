@@ -1,7 +1,7 @@
 CourseProject_WearableComputing
 ===============================
 
-This repo constitutes the course project for the 'Getting and Cleaning Data' MOOC in the Johns Hopkins Data Science Specialization Series
+This repo constitutes the participant's submission of the Course Project for the 'Getting and Cleaning Data' MOOC in the Johns Hopkins Data Science Specialization Series
 
 What is the Script Setup
 
