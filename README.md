@@ -3,7 +3,7 @@ CourseProject_WearableComputing
 
 This repo constitutes the participant's submission of the Course Project for the 'Getting and Cleaning Data' MOOC in the Johns Hopkins Data Science Specialization Series
 
-What is the Script Setup
+What is the Setup
 
 The run_analysis.R script included in this repo assumes that you have downloaded the UCI HAR Dataset, unpacked it, and changed your working directory to be the 'UCI HAR Dataset' directory.
 
