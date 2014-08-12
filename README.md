@@ -17,6 +17,6 @@ This script produces a text file called meantables.txt (also included in this re
 
 What Do the Table Variables Mean
 
-A Codebook describing the tidy set is included in this repo as a separate file called Codebook.md
+A Codebook describing the tidy set is included in this repo as a separate file called Codebook.md, where you must scroll down to see the general codebook description format of: variable name, variable field width, variable definition, and range of values.
 
 
